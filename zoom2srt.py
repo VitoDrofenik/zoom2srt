@@ -1,5 +1,8 @@
 import os, datetime, re
-path_to_dir = input("Enter the path to the recording: ") + '\\'
+path_to_dir = (input("Enter the path to the recording: ") + '\\').replace("/", "\\")
+if path_to_dir.count("\\") < 2:
+    print("Path to the directory most likely not valid")
+    exit(1)
 ignore_list = input("If you want, enter the messages you want to skip, separated by commas: ").split(',')
 for index, element in enumerate(ignore_list):
     ignore_list[index] = ignore_list[index].strip()
@@ -41,3 +44,4 @@ try:
     f_write.close()
 except IOError:
     print("An error occured when handling the files")
+    exit(1)
