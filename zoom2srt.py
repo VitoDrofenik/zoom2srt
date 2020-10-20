@@ -3,7 +3,11 @@ path_to_dir = (input("Enter the path to the recording: ") + '\\').replace("/", "
 if path_to_dir.count("\\") < 2:
     print("Path to the directory most likely not valid")
     exit(1)
-ignore_list = input("If you want, enter the messages you want to skip, separated by commas: ").split(',')
+yes = ["y", "Y", "yes", "YES", "Yes", "1"]
+only_questions = input("Do you want to only include questions (messages that include '?') (y/yes/1): ").strip() in yes
+ignore_list = []
+if not only_questions:
+    ignore_list = input("If you want, enter the messages you want to skip, separated by commas: ").split(',')
 for index, element in enumerate(ignore_list):
     ignore_list[index] = ignore_list[index].strip()
 path = os.path.dirname(path_to_dir)
@@ -19,6 +23,8 @@ try:
         if len(line.split(':')) > 1:
             temp_text = line.split("From  ")[1]
             if temp_text.split(": ")[1].strip() in ignore_list:
+                continue
+            if "?" not in temp_text.split(": ")[1].strip() and only_questions:
                 continue
             temp_out = ""
             temp_time = line.split("\t")[0].split(":")
