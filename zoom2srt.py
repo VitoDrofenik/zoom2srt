@@ -1,5 +1,8 @@
 import os, datetime, re
 path_to_dir = input("Enter the path to the recording: ") + '\\'
+ignore_list = input("If you want, enter the messages you want to skip, separated by commas: ").split(',')
+for index, element in enumerate(ignore_list):
+    ignore_list[index] = ignore_list[index].strip()
 path = os.path.dirname(path_to_dir)
 beginning = path.split('\\')[-1].split(" ")[0]+" "+path.split(" ")[1].replace('.', ':')
 beginning = re.compile("([: -])+").split(beginning)
@@ -10,11 +13,13 @@ f_read = open(path_to_dir+"chat.txt", "r")
 f_write = open(path_to_dir+"zoom_0.srt", "w")
 for line in f_read:
     if len(line.split(':')) > 1:
+        temp_text = line.split("From  ")[1]
+        if temp_text.split(": ")[1].strip() in ignore_list:
+            continue
         temp_out = ""
         temp_time = line.split("\t")[0].split(":")
         temp_time = datetime.datetime(beginning.year, beginning.month, beginning.day, int(temp_time[0]), int(temp_time[1]), int(temp_time[2]))
         temp_time = temp_time - beginning
-        temp_text = line.split("From  ")[1]
         lines += 1
         temp_out += str(lines)
         temp_out += "\n"
